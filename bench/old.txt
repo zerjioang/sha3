@@ -1,0 +1,10 @@
+BenchmarkGenerateMethodSignatures/generate--12         	 1000000	      1641 ns/op	   0.61 MB/s	     976 B/op	       6 allocs/op
+BenchmarkGenerateMethodSignatures/generate--12         	  824888	      1392 ns/op	   0.72 MB/s	     976 B/op	       6 allocs/op
+BenchmarkGenerateMethodSignatures/generate--12         	 1283482	      1083 ns/op	   0.92 MB/s	     976 B/op	       6 allocs/op
+BenchmarkGenerateMethodSignatures/generate--12         	 1378556	      1714 ns/op	   0.58 MB/s	     976 B/op	       6 allocs/op
+BenchmarkGenerateMethodSignatures/generate--12         	  926504	      1542 ns/op	   0.65 MB/s	     976 B/op	       6 allocs/op
+BenchmarkGenerateMethodSignatures/generate--12         	 1277808	      1293 ns/op	   0.77 MB/s	     976 B/op	       6 allocs/op
+BenchmarkGenerateMethodSignatures/generate--12         	  976179	      1174 ns/op	   0.85 MB/s	     976 B/op	       6 allocs/op
+BenchmarkGenerateMethodSignatures/generate--12         	 1000000	      1328 ns/op	   0.75 MB/s	     976 B/op	       6 allocs/op
+BenchmarkGenerateMethodSignatures/generate--12         	 1238808	      1495 ns/op	   0.67 MB/s	     976 B/op	       6 allocs/op
+BenchmarkGenerateMethodSignatures/generate--12         	  902724	      1271 ns/op	   0.79 MB/s	     976 B/op	       6 allocs/op
