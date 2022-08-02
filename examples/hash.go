@@ -24,6 +24,6 @@ func main() {
 	_, _ = h.Write([]byte(fname))
 	hash := h.Hash4()
 	fmt.Println("function name:", fname)
-	fmt.Println("sha3 hash value:", hex.EncodeToString(hash[:]))
+	fmt.Println("sha3 4 bytes signature:", hex.EncodeToString(hash[:]))
 	// Output: 24655e23
 }
