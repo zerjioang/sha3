@@ -15,7 +15,7 @@ package sha3_test
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/kodegiten/sha3"
+	"github.com/zerjioang/sha3"
 	"testing"
 )
 
