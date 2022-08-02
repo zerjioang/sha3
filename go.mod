@@ -1,3 +1,3 @@
-module github.com/kodegiten/sha3
+module github.com/zerjioang/sha3
 
 go 1.18
