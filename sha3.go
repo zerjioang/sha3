@@ -7,7 +7,7 @@ import "unsafe"
 // license that can be found in the LICENSE file.
 
 // spongeDirection indicates the direction bytes are flowing through the sponge.
-type spongeDirection int
+type spongeDirection uint8
 
 const (
 	// maxRate is the maximum size of the internal buffer. SHAKE-256
@@ -68,6 +68,10 @@ func (d *State) Reset() {
 	}
 	d.state = spongeAbsorbing
 	d.buf = d.storage.asBytes()[:0]
+	d.rate = 136
+	d.dsbyte = 0x01
+	d.state = spongeAbsorbing
+	d.outputLen = 32
 }
 
 func (d *State) clone() *State {

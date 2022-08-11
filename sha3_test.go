@@ -15,9 +15,34 @@ package sha3_test
 import (
 	"encoding/hex"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"github.com/zerjioang/sha3"
 	"testing"
 )
+
+const hextable = "0123456789abcdef"
+
+type MethodSignatureHex [8]byte
+
+func GenerateMethodSignature(h *sha3.State, fname []byte) string {
+	_, _ = h.Write(fname)
+	hash := h.Hash4()
+	h.Reset()
+	var dst MethodSignatureHex
+	_ = hash[3]
+	dst[0] = hextable[hash[0]>>4]
+	dst[1] = hextable[hash[0]&0x0f]
+
+	dst[2] = hextable[hash[1]>>4]
+	dst[3] = hextable[hash[1]&0x0f]
+
+	dst[4] = hextable[hash[2]>>4]
+	dst[5] = hextable[hash[2]&0x0f]
+
+	dst[6] = hextable[hash[3]>>4]
+	dst[7] = hextable[hash[3]&0x0f]
+	return string(dst[:])
+}
 
 func TestNewSha3(t *testing.T) {
 	t.Run("example", func(t *testing.T) {
@@ -28,6 +53,17 @@ func TestNewSha3(t *testing.T) {
 		fmt.Println("function name:", fname)
 		fmt.Println("sha3 hash value:", hex.EncodeToString(hash[:]))
 		// Output: 24655e23
+	})
+	t.Run("use-multiple-hashers", func(t *testing.T) {
+		var h = sha3.NewSha3()
+		assert.Equal(t, GenerateMethodSignature(&h, []byte("f09140466846285922(address,bytes)")), "00000000")
+		h1 := sha3.NewSha3()
+		assert.Equal(t, GenerateMethodSignature(&h1, []byte("destroy()")), "83197ef0")
+	})
+	t.Run("reuse-hasher", func(t *testing.T) {
+		var h = sha3.NewSha3()
+		assert.Equal(t, GenerateMethodSignature(&h, []byte("f09140466846285922(address,bytes)")), "00000000")
+		assert.Equal(t, GenerateMethodSignature(&h, []byte("destroy()")), "83197ef0")
 	})
 	t.Run("loop-example", func(t *testing.T) {
 		var h = sha3.NewSha3()
