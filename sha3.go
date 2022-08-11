@@ -26,7 +26,7 @@ type State struct {
 	// Generic sponge components.
 	a    [25]uint64 // main state of the hash
 	buf  []byte     // points into storage
-	rate int        // the number of bytes of state to use
+	rate uint8      // the number of bytes of state to use
 
 	// dsbyte contains the "domain separation" bits and the first bit of
 	// the padding. Sections 6.1 and 6.2 of [1] separate the outputs of the
@@ -45,7 +45,7 @@ type State struct {
 	storage storageBuf
 
 	// Specific to SHA-3 and SHAKE.
-	outputLen int             // the default output size in bytes
+	outputLen uint8           // the default output size in bytes
 	state     spongeDirection // whether the sponge is absorbing or squeezing
 }
 
@@ -54,10 +54,10 @@ func NewSha3() State {
 }
 
 // BlockSize returns the rate of sponge underlying this hash function.
-func (d *State) BlockSize() int { return d.rate }
+func (d *State) BlockSize() int { return int(d.rate) }
 
 // Size returns the output size of the hash function in bytes.
-func (d *State) Size() int { return d.outputLen }
+func (d *State) Size() int { return int(d.outputLen) }
 
 // Reset clears the internal State by zeroing the sponge State and
 // the byte buffer, and setting Sponge.State to absorbing.
@@ -75,7 +75,7 @@ func (d *State) clone() *State {
 	if ret.state == spongeAbsorbing {
 		ret.buf = ret.storage.asBytes()[:len(ret.buf)]
 	} else {
-		ret.buf = ret.storage.asBytes()[d.rate-cap(d.buf) : d.rate]
+		ret.buf = ret.storage.asBytes()[int(d.rate)-cap(d.buf) : d.rate]
 	}
 
 	return &ret
@@ -113,7 +113,7 @@ func (d *State) padAndPermute(dsbyte byte) {
 	d.buf = append(d.buf, dsbyte)
 	zerosStart := len(d.buf)
 	d.buf = d.storage.asBytes()[:d.rate]
-	for i := zerosStart; i < d.rate; i++ {
+	for i := zerosStart; i < int(d.rate); i++ {
 		d.buf[i] = 0
 	}
 	// This adds the final one bit for the padding. Because of the way that
@@ -139,14 +139,14 @@ func (d *State) Write(p []byte) (written int, err error) {
 	written = len(p)
 
 	for len(p) > 0 {
-		if len(d.buf) == 0 && len(p) >= d.rate {
+		if len(d.buf) == 0 && len(p) >= int(d.rate) {
 			// The fast path; absorb a full "rate" bytes of input and apply the permutation.
 			xorIn(d, p[:d.rate])
 			p = p[d.rate:]
 			keccakF1600(&d.a)
 		} else {
 			// The slow path; buffer the input until we can fill the sponge, and then xor it in.
-			todo := d.rate - len(d.buf)
+			todo := int(d.rate) - len(d.buf)
 			if todo > len(p) {
 				todo = len(p)
 			}
@@ -154,7 +154,7 @@ func (d *State) Write(p []byte) (written int, err error) {
 			p = p[todo:]
 
 			// If the sponge is full, apply the permutation.
-			if len(d.buf) == d.rate {
+			if len(d.buf) == int(d.rate) {
 				d.permute()
 			}
 		}
